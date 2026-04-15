@@ -4,6 +4,7 @@ Thanks for sharing this full workflow, Sarker. Here's a clean, deployment-ready 
 ---
    sudo ./flu.sh
    ```
-curl -O "https://raw.githubusercontent.com/flussoniciptv/Flussonic-UpdateLC/refs/heads/main/flu.sh"
+curl -O "https://raw.githubusercontent.com/flussoniciptv/Flussonic-UpdateLC/main/flu.sh"
 chmod +x flu.sh
 sudo ./flu.sh
+sudo service flussonic restart
