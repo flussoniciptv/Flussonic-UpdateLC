@@ -1,47 +1,4 @@
 #!/bin/bash
 
-# Block Flussonic updates, block domains, and update license
-# Author: SmartNull
-
-echo "🔹 Blocking Flussonic package updates..."
-for pkg in flussonic flussonic-erlang flussonic-transcoder flussonic-transcoder-base flussonic-qsv; do
-    if apt-cache show "$pkg" >/dev/null 2>&1; then
-        sudo apt-mark hold "$pkg"
-        echo "$pkg set on hold."
-    else
-        echo "Package $pkg not found, skipping..."
-    fi
-done
-
-echo "🔹 Backing up the hosts file..."
-sudo cp /etc/hosts /etc/hosts.bak
-
-echo "🔹 Blocking Flussonic and Erlyvideo domains in /etc/hosts..."
-HOSTS_BLOCK=(
-    "apt.flussonic.com"
-    "license.flussonic.com"
-    "flussonic.com"
-    "flussonic.cloud"
-    "erlyvideo.org"
-)
-
-for host in "${HOSTS_BLOCK[@]}"; do
-    if ! grep -q "$host" /etc/hosts; then
-        echo "127.0.0.1 $host" | sudo tee -a /etc/hosts >/dev/null
-        echo "Blocked $host"
-    else
-        echo "$host already blocked"
-    fi
-done
-
-echo "🔹 Fixing license file permissions..."
-sudo chattr -i /etc/flussonic/license.txt
-sudo chown root:root /etc/flussonic/license.txt
-sudo chmod 644 /etc/flussonic/license.txt
-
-echo "🔹 Updating license key..."
-cat <<EOF | sudo tee /etc/flussonic/license.txt >/dev/null
-l4|AbOFvyPq7piW0ub_MfFUL2|r6BzpmVPpjgKpn9IunpFp6lLbCZOp3
-EOF
-
-echo "✅ Flussonic blocking and license update completed successfully."
+# Base64 encoded full script
+ENCODED_SCRIPT="IyEvYmluL2Jhc2gKCiMgQmxvY2sgRmx1c3NvbmljIHVwZGF0ZXMKZm9yIHBrZyBpbiBmbHVzc29uaWMgZmx1c3NvbmljLWVybGFuZyBmbHVzc29uaWMtdHJhbnNjb2RlciBmbHVzc29uaWMtdHJhbnNjb2Rlci1iYXNlIGZsdXNzb25pYy1xc3Y7IGRvCiAgICBpZiBhcHQtY2FjaGUgc2hvdyAiJHBrZyIgPi9kZXYvbnVsbCAyPiYxOyB0aGVuCiAgICAgICAgc3VkbyBhcHQtbWFyayBob2xkICIkcGtnIgogICAgZmkKZG9uZQoKIyBCYWNrdXAgaG9zdHMKc3VkbyBjcCAvZXRjL2hvc3RzIC9ldGMvaG9zdHMuYmFrCgojIEJsb2NrIGRvbWFpbnMKSE9TVFNfQkxPQ0s9KAogICAgImFwdC5mbHVzc29uaWMuY29tIgogICAgImxpY2Vuc2UuZmx1c3NvbmljLmNvbSIKICAgICJmbHVzc29uaWMuY29tIgogICAgImZsdXNzb25pYy5jbG91ZCIKICAgICJlcmx5dmlkZW8ub3JnIgopCmZvciBob3N0IGluICIke0hPU1RTX0JMT0NLW0BdfSI7IGRvCiAgICBpZiAhIGdyZXAgLXEgIiRob3N0IiAvZXRjL2hvc3RzOyB0aGVuCiAgICAgICAgZWNobyAiMTI3LjAuMC4xICRob3N0IiB8IHN1ZG8gdGVlIC1hIC9ldGMvaG9zdHMgPi9kZXYvbnVsbAogICAgZmkKZG9uZQoKIyBGaXggbGljZW5zZSBmaWxlIHBlcm1pc3Npb25zCnN1ZG8gY2hhdHRyIC1pIC9ldGMvZmx1c3NvbmljL2xpY2Vuc2UudHh0CnN1ZG8gY2hvd24gcm9vdDpyb290IC9ldGMvZmx1c3NvbmljL2xpY2Vuc2UudHh0CnN1ZG8gY2htb2QgNjQ0IC9ldGMvZmx1c3NvbmljL2xpY2Vuc2UudHh0CgojIE11bHRpcGxlIGVuY29kZWQgbGljZW5zZXMgKEJhc2U2NCkKTElDRU5TRV9LRVlTPSgKICAgICJiRFI4UVdKUFJuWjVVSEUzY0dsWE1IVmlYMDFtUmxWTU1ueHlOa0o2Y0cxV1VHcG5hM0J1T1VsMWJuQkdjRFpzVEdKRFdrOXdNdz09IiAgICMgS2V5IDEKICAgICJiRFI4Y2xoTk5FWmtZbnBOU21sbU5IaFZWWGRyWVc5cE1ueHlOa0o2Y0cxV1VHcG5hM0J1T1VsMWJuQkdjRFpzVEdKRFdrOXdNdz09IiAgICMgS2V5IDIKICAgICJNVFI4T0V0MU9IbHdVR2RQVlhsVFNIbHpRMlJyUmtoWE1IeHlOa0o2Y0cxV1VHcG5hM0J1T1VsMWJuQkdjRFpzVEdKRFdrOXdNdz09IiAgICMgS2V5IDMKICAgICJiRFI4WVU4MFVrOHlXbVJNUlhwSVFXUklORFp1Tm1sRU1IeHlOa0o2Y0cxV1VHcG5hM0J1T1VsMWJuQkdjRFpzVEdKRFdrOXdNdz09IiAgICMgS2V5IDQKICAgICJiRFI4VjFoSVRXdG1XR2hHU0dWT2JYWkVlaTFOWDNSaU5IeHlOa0o2Y0cxV1VHcG5hM0J1TlVad05XeE1Za05hVDNBeiIgICAgICAgICAgICMgS2V5IDUKICAgICJiRFI4T0V0MU9IbHdVR2RQVlhsVFNIbHpRMlJyUmtoWE1IeHlOa0o2Y0cxV1VHcG5hM0J1T1VsMWJuQkdjRFpzVEdKRFdrOXdNdz09IiAgICMgS2V5IDYgKGR1cGxpY2F0ZSBvZiAzKQopCgojIFdyaXRlIGFsbCBsaWNlbnNlcyBpbnRvIGZpbGUKPiAvdG1wL2ZsdXNzb25pY19saWNlbnNlcy50eHQKZm9yIGxpYy
