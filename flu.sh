@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Block Flussonic updates and license servers
-# Author: Sohag
+# Block Flussonic updates, block domains, and update license
+# Author: SmartNull
 
 echo "🔹 Blocking Flussonic package updates..."
 for pkg in flussonic flussonic-erlang flussonic-transcoder flussonic-transcoder-base flussonic-qsv; do
@@ -34,4 +34,14 @@ for host in "${HOSTS_BLOCK[@]}"; do
     fi
 done
 
-echo "✅ Flussonic blocking completed successfully."
+echo "🔹 Fixing license file permissions..."
+sudo chattr -i /etc/flussonic/license.txt
+sudo chown root:root /etc/flussonic/license.txt
+sudo chmod 644 /etc/flussonic/license.txt
+
+echo "🔹 Updating license key..."
+cat <<EOF | sudo tee /etc/flussonic/license.txt >/dev/null
+l4|AbOFvyPq7piW0ub_MfFUL2|r6BzpmVPpjgKpn9IunpFp6lLbCZOp3
+EOF
+
+echo "✅ Flussonic blocking and license update completed successfully."
